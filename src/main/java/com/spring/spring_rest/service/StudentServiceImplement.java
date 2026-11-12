@@ -36,9 +36,10 @@ public class StudentServiceImplement implements StudentService {
   @Override
   public List<StudentDto> getAllStudents() {
       List<Student> students = studentRepo.findAll();
-      return students.stream().map(
-              (student)-> StudentMapper.mapToStudentDto(student))
-              .collect(Collectors.toList());
+
+      return students.stream()
+          .map((student) -> StudentMapper.mapToStudentDto(student))
+          .collect(Collectors.toList());
   }
 
   @Override
@@ -54,7 +55,7 @@ public class StudentServiceImplement implements StudentService {
       Student saved = studentRepo.save(student);
       return StudentMapper.mapToStudentDto(saved);
   }
-  
+   
   @Override
   public StudentDto patchStudent(Long theId, StudentDto theStudentDto) {
       Student student = studentRepo.findById(theId)
@@ -73,5 +74,14 @@ public class StudentServiceImplement implements StudentService {
 
       Student saved = studentRepo.save(student);
       return StudentMapper.mapToStudentDto(saved);
+  }
+
+  @Override
+  public void deleteStudentById(Long theId) {
+      studentRepo.findById(theId)
+              .orElseThrow(() -> new StudentNotFoundException(
+                      "Student id " + theId + " not found!"));
+
+      studentRepo.deleteById(theId);
   }
 }
